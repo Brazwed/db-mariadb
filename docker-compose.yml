@@ -1,0 +1,19 @@
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb_${COMPOSE_PROJECT_NAME:-default}
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MA_PASS}
+      MARIADB_DATABASE: ${MA_DB}
+      MARIADB_USER: ${MA_USER}
+      MARIADB_PASSWORD: ${MA_PASS}
+    ports:
+      - "${MA_PORT}:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
